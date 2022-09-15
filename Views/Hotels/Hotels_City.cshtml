@@ -1,0 +1,66 @@
+﻿@model Travel_Application.ViewModels.FilterHotel
+
+@{
+    ViewData["Title"] = "Hotels_City";
+}
+
+<h1>Hotels in @ViewBag.Message</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form asp-controller="Hotels" asp-action="Hotels_City" method="get">
+    <p>
+        Name: <input type="text" asp-for="Name" />
+       
+        Stars:
+        <select asp-for="star" asp-items="Model.stars">
+            <option value=""></option>
+        </select>
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.hotels[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.hotels[0].Stars)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.hotels[0].PetFriendly)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.hotels[0].Spa)
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.hotels) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Stars)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PetFriendly)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Spa)
+            </td>
+           
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

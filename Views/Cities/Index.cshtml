@@ -1,0 +1,62 @@
+﻿@model Travel_Application.ViewModels.FilterCity
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Cities</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form asp-controller="Cities" asp-action="Index" method="get">
+    <p>
+        Name: <input type="text" asp-for="Name" />
+        Country: <input type="text" asp-for="Country" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.cities[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cities[0].Country)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cities[0].PopularLandMark)
+            </th>
+            <th>
+                Hotels
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.cities) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Country)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PopularLandMark)
+            </td>
+            <td>
+                <a asp-controller="Hotels" asp-action="Hotels_City" asp-route-id="@item.Id">
+                   Hotels
+                </a>
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
