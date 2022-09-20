@@ -96,12 +96,22 @@ namespace Travel_Application.Controllers
                 return NotFound();
             }
 
-            var city = await _context.City.FindAsync(id);
+            var city = _context.City.Where(m => m.Id == id).Include(x => x.Hotels).First();
+            IQueryable<City> citiesQuery = _context.City.AsQueryable();
+            citiesQuery = citiesQuery.Where(m => m.Id == id);
             if (city == null)
             {
                 return NotFound();
             }
-            return View(city);
+            var hotels = _context.Hotel.AsEnumerable();
+            hotels = hotels.OrderBy(s => s.Name);
+            EnrollHotels viewmodel = new EnrollHotels
+            {
+                city = await citiesQuery.FirstAsync(),
+                hotelsEnrolledList = new MultiSelectList(hotels, "Id", "Name"),
+                selectedHotels = city.Hotels.Select(sa => sa.CityId)
+            };
+            return View(viewmodel);
         }
 
         // POST: Cities/Edit/5
@@ -109,9 +119,9 @@ namespace Travel_Application.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Country,PopularLandMark")] City city)
+        public async Task<IActionResult> Edit(int id, EnrollHotels viewmodel)
         {
-            if (id != city.Id)
+            if (id != viewmodel.city.Id)
             {
                 return NotFound();
             }
@@ -120,12 +130,34 @@ namespace Travel_Application.Controllers
             {
                 try
                 {
-                    _context.Update(city);
+                    _context.Update(viewmodel.city);
                     await _context.SaveChangesAsync();
+
+                    var city = _context.City.Where(c => c.Id == id).First();
+                    IEnumerable<int> selectedHotels = viewmodel.selectedHotels;
+                    if (selectedHotels != null)
+                    {
+                        IQueryable<HotelCity> toBeRemoved = _context.HotelCity.Where(s => !selectedHotels.Contains(s.HotelId) && s.CityId == id);
+                        _context.HotelCity.RemoveRange(toBeRemoved);
+
+                        IEnumerable<int> existEnrollments = _context.HotelCity.Where(s => selectedHotels.Contains(s.HotelId) && s.CityId == id).Select(s => s.Id);
+                        IEnumerable<int> newEnrollments = selectedHotels.Where(s => !existEnrollments.Contains(s));
+
+                        foreach (int studentId in newEnrollments)
+                            _context.HotelCity.Add(new HotelCity { HotelId = studentId, CityId = id });
+
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        IQueryable<HotelCity> toBeRemoved = _context.HotelCity.Where(s => s.CityId == id);
+                        _context.HotelCity.RemoveRange(toBeRemoved);
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CityExists(city.Id))
+                    if (!CityExists(viewmodel.city.Id))
                     {
                         return NotFound();
                     }
@@ -136,7 +168,7 @@ namespace Travel_Application.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(city);
+            return View(viewmodel);
         }
 
         // GET: Cities/Delete/5

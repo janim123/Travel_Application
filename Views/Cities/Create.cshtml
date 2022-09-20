@@ -29,7 +29,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Hotels" class="control-label">Enrolled courses</label>
-                <select asp-for="Hotels" class ="form-control" asp-items="ViewBag.Hotels" SelectionMode="Multiple">
+                <select asp-for="Hotels" class ="form-control js-example-basic-multiple" asp-items="ViewBag.Hotels" SelectionMode="Multiple">
                     <option value="">Select</option>
                 </select>
                 <span asp-validation-for="Hotels" class="text-danger"></span>

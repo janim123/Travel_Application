@@ -32,7 +32,9 @@
             @Html.DisplayNameFor(model => model.AgencyUrl)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AgencyUrl)
+            
+                <a href = @Html.ValueFor(model => model.AgencyUrl)>Go to @Html.DisplayFor(model => model.Name)  </a>
+            
         </dd>
     </dl>
 </div>

@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Travel_Application.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Travel_Application.Areas.Identity.Data;
 
 namespace Travel_Application.Data
 {
-    public class Travel_ApplicationContext : DbContext
+    public class Travel_ApplicationContext : IdentityDbContext<Travel_ApplicationUser>
     {
         public Travel_ApplicationContext (DbContextOptions<Travel_ApplicationContext> options)
             : base(options)
@@ -38,6 +40,9 @@ namespace Travel_Application.Data
             .WithMany(p => p.Hotels)
             .HasForeignKey(p => p.AgencyId);
             //.HasPrincipalKey(p => p.Id);
+
+            base.OnModelCreating(builder);
+
         }
 
     }
