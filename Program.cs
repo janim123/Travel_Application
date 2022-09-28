@@ -12,8 +12,10 @@ using Travel_Application.Areas.Identity.Data;
 using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<Travel_ApplicationContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Travel_ApplicationContext") ?? throw new InvalidOperationException("Connection string 'Travel_ApplicationContext' not found.")));
+
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
@@ -29,7 +31,12 @@ builder.Services.AddIdentity<Travel_ApplicationUser, IdentityRole>().AddEntityFr
 
 
 builder.Services.AddControllersWithViews()
-
+.AddNewtonsoftJson(x =>
+{
+    x.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+    x.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.None;
+})
 .AddRazorPagesOptions(options =>
 {
     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
@@ -43,12 +50,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = true;
     options.Password.RequireLowercase = false;
-    options.Password.RequiredUniqueChars = 6;
-    // Lockout settings
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-    options.Lockout.MaxFailedAccessAttempts = 10;
-    options.Lockout.AllowedForNewUsers = true;
-    // User settings
+    
+   
     options.User.RequireUniqueEmail = true;
 });
 builder.Services.ConfigureApplicationCookie(options =>
@@ -61,7 +64,11 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
     options.SlidingExpiration = true;
 });
+
+builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -85,6 +92,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Cities}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 app.Run();

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Travel_Application.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Travel_Application.Areas.Identity.Data;
 
 namespace Travel_Application.Data
@@ -24,7 +25,9 @@ namespace Travel_Application.Data
 
         public DbSet<Travel_Application.Models.HotelCity>? HotelCity { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
-        {
+        { 
+            base.OnModelCreating(builder);
+
             builder.Entity<HotelCity>()
             .HasOne<Hotel>(p => p.Hotel)
             .WithMany(p => p.Cities)
@@ -41,7 +44,7 @@ namespace Travel_Application.Data
             .HasForeignKey(p => p.AgencyId);
             //.HasPrincipalKey(p => p.Id);
 
-            base.OnModelCreating(builder);
+           
 
         }
 

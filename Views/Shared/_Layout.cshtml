@@ -18,23 +18,25 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                       <li class="nav-item">
-                            <a style="margin-left:150px; " class="nav-link text-dark test" asp-area="" asp-controller="Cities" asp-action="Index">Cities</a>
-                        </li>
-                        <li class="nav-item">
-                            <a style="margin-left:150px;" class="nav-link text-dark test" asp-area="" asp-controller="Hotels" asp-action="Index">Hotels</a>
-                        </li>
-                        <li class="nav-item">
-                            <a style="margin-left:150px; " class="nav-link text-dark test" asp-area="" asp-controller="Agencies" asp-action="Index"> Agencies</a>
+                    <ul >
+                            <li class="nav-item">
 
-                        </li>
-                        <li class="nav-item">
-                            <a style="margin-left:150px; " class="nav-link text-dark test" asp-area="" asp-controller="HotelCities" asp-action="Index"> Hotel-City</a>
+                                <a style="margin-left:150px; " class="nav-link text-dark test" asp-area="" asp-controller="Cities" asp-action="Index">Cities</a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="margin-left:150px;" class="nav-link text-dark test" asp-area="" asp-controller="Hotels" asp-action="Index">Hotels</a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="margin-left:150px; " class="nav-link text-dark test" asp-area="" asp-controller="Agencies" asp-action="Index"> Agencies</a>
 
-                        </li>
+                            </li>
+                       
+                                <li class="nav-item">
+                                    <a style="margin-left:150px; " class="nav-link text-dark test" asp-area="" asp-controller="HotelCities" asp-action="Index"> Hotel-City</a>
+
+                                </li>
                     </ul>
-
+                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>

@@ -1,15 +1,53 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Travel_Application.Areas.Identity.Data;
 using Travel_Application.Data;
 
 namespace Travel_Application.Models
 {
     public class SeedData
     {
+        public static async Task CreateUserRoles(IServiceProvider serviceProvider)
+        {
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<Travel_ApplicationUser>>();
+            IdentityResult roleResult;
+            //Add Admin Role
+            var roleCheck = await RoleManager.RoleExistsAsync("Admin");
+            if (!roleCheck) { roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin")); }
+            Travel_ApplicationUser user = await UserManager.FindByEmailAsync("admin@travelapp.com");
+
+            if (user == null)
+            {
+                var User = new Travel_ApplicationUser();
+                User.Email = "admin@travelapp.com";
+                User.UserName = "admin@travelapp.com";
+                string userPWD = "Admin123";
+                IdentityResult chkUser = await UserManager.CreateAsync(User, userPWD);
+                //Add default User to Role Admin
+                if (chkUser.Succeeded) { var result1 = await UserManager.AddToRoleAsync(User, "Admin"); }
+            }
+
+            //Add Guest Role
+            roleCheck = await RoleManager.RoleExistsAsync("Guest");
+            if (!roleCheck) { roleResult = await RoleManager.CreateAsync(new IdentityRole("Guest")); }
+            user = await UserManager.FindByEmailAsync("guest@travelapp.com");
+            if (user == null)
+            {
+                var User = new Travel_ApplicationUser();
+                User.Email = "guest@travelapp.com";
+                User.UserName = "guest@travelapp.com";
+                string userPWD = "Guest123";
+                IdentityResult chkUser = await UserManager.CreateAsync(User, userPWD);
+                //Add default User to Role Teacher
+                if (chkUser.Succeeded) { var result1 = await UserManager.AddToRoleAsync(User, "Guest"); }
+            }
+        }
         public static void Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new Travel_ApplicationContext(
